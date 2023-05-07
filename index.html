@@ -1,226 +1,253 @@
-{% extends 'base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang='en'>
+    <head>
+        <meta charset='utf-8'>
+        <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>
 
-{% block title %}Auctions | {{ title }} {% endblock %}
+        <title>{% block title %}Auctions{% endblock %}</title>
 
-{% block categories %}
-    <!-- Divider -->
-    <hr class='sidebar-divider'>
-    
-    <!-- Heading -->
-    <div class='sidebar-heading'>
-        Categories
-    </div>
+        <link rel='icon' type='image/x-icon' href='{% static "images/favicon.ico" %}'>
 
-    {% for category in categories %}
-        <li class='nav-item'>
-            <a class='nav-link' href="{% url 'category_details_view' category.category_name %}">
-                <i class='fas fa-fw fa-folder-open'></i>
-                <span class='text-uppercase'>{{ category }}</span>
-                <span class='badge-custom'>
-                    {{ category.count_active_auctions }}
-                </span>
-            </a>
-        </li>
-    {% endfor %}
-    
-{% endblock %}
+        <!-- Icons -->
+        <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css' rel='stylesheet'>
+        <link href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css' rel='stylesheet' />
 
+        <!-- Bootstrap CSS -->
+        <link href='{% static "css/bootstrap.min.css" %}' rel='stylesheet'>
 
-{% block body %}
-    <!-- Page Heading -->
-    <h1 class='h3 mb-4 text-gray-800'>Dashboard</h1>
+        <!-- Custom styles -->
+        <link href='{% static "css/styles.css" %}' rel='stylesheet'>
+    </head>
 
-    <div class='row'>
-    
-        <div class='col-xl-3 col-md-6 mb-4'>
-            <div class='card border-left-blue shadow h-100 py-2'>
-                <div class='card-body'>
-                    <div class='row no-gutters align-items-center'>
-                        <div class='col mr-2'>
-                            <div class='text-xs font-weight-bold text-primary text-uppercase mb-1'>
-                                Auctions
-                            </div>
-                            <div class='h5 mb-0 font-weight-bold text-gray-800'>
-                                {{ auctions_count }}
-                            </div>
-                        </div>
-                        <div class='col-auto'>
-                            <i class='fas fa-shopping-cart fa-2x text-gray-300'></i>
-                        </div>
+    <body id='page-top'>
+
+        <!-- Page Wrapper -->
+        <div id='wrapper'>
+
+            <!-- Sidebar -->
+            <ul class='navbar-nav bg-primary sidebar sidebar-dark accordion' id='accordionSidebar'>
+
+                <!-- Sidebar - Brand -->
+                <a class='sidebar-brand d-flex align-items-center justify-content-center' href="{% url 'templates/index' %}">
+                    <div class='sidebar-brand-icon'>
+                        <i class='fas fa-shopping-cart'></i>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <div class='col-xl-3 col-md-6 mb-4'>
-            <div class='card border-left-orange shadow h-100 py-2'>
-                <div class='card-body'>
-                    <div class='row no-gutters align-items-center'>
-                        <div class='col mr-2'>
-                            <div class='text-xs font-weight-bold text-primary text-uppercase mb-1'>
-                                Bids
-                            </div>
-                            <div class='h5 mb-0 font-weight-bold text-gray-800'>
-                                {{ bids_count }}
-                            </div>
-                        </div>
-                        <div class='col-auto'>
-                            <i class='fas fa-hammer fa-2x text-gray-300'></i>
-                        </div>
+                    <div class='sidebar-brand-text mx-3'>
+                        Auctions
                     </div>
-                </div>
-            </div>
-        </div>
+                </a>
 
-        <div class='col-xl-3 col-md-6 mb-4'>
-            <div class='card border-left-green shadow h-100 py-2'>
-                <div class='card-body'>
-                    <div class='row no-gutters align-items-center'>
-                        <div class='col mr-2'>
-                            <div class='text-xs font-weight-bold text-primary text-uppercase mb-1'>
-                                Categories
-                            </div>
-                            <div class='h5 mb-0 font-weight-bold text-gray-800'>
-                                {{ categories_count }}
-                            </div>
-                        </div>
-                        <div class='col-auto'>
-                            <i class='fas fa-folder-open fa-2x text-gray-300'></i>
-                        </div>
+                <!-- Divider -->
+                <hr class='sidebar-divider my-0'>
+
+                <!-- Nav Item - Dashboard -->
+                <li class='nav-item'>
+                    <a class='nav-link' href="{% url 'templates/index' %}">
+                        <i class='fas fa-fw fa-chart-area'></i>
+                        <span>DASHBOARD</span>
+                    </a>
+                </li>
+
+                <!-- Nav Item - Active Auctions -->
+                <li class='nav-item'>
+                    <a class='nav-link' href="{% url 'templates/active_auctions_view' %}">
+                        <i class='fas fa-fw fa-list'></i>
+                        <span>ACTIVE AUCTIONS</span>
+                    </a>
+                </li>
+
+                {% if user.is_authenticated %}
+                    <!-- Nav Item - Watchlist -->
+                    <li class='nav-item'>
+                        <a class='nav-link' href="{% url 'templates/watchlist_view' %}">
+                            <i class='fas fa-fw fa-eye'></i>
+                            <span>WATCHLIST</span>
+                        </a>
+                    </li>
+
+                    <!-- Nav Item - Create Auction -->
+                    <li class='nav-item'>
+                        <a class='nav-link' href="{% url 'templates/auction_create' %}">
+                            <i class='far fa-plus-square'></i>
+                            <span>CREATE AUCTION</span>
+                        </a>
+                    </li>
+                {% endif %}
+
+                {% block categories %}
+                {% endblock %}
+
+                <!-- Divider -->
+                <hr class='sidebar-divider d-none d-md-block'>
+
+                <!-- Signed in user -->
+                <li class='nav-item'>
+                    <div class='nav-link'>
+                        {% if user.is_authenticated %}
+                            <div class='sidebar-text-gray'>Signed in as:</div>
+                            <div class='sidebar-text-white'>{{ user.username }}</div>
+                        {% else %}
+                            <div class='sidebar-text-gray'>Not signed in.</div>
+                        {% endif %}
                     </div>
-                </div>
-            </div>
-        </div>
+                </li>
 
-        <div class='col-xl-3 col-md-6 mb-4'>
-            <div class='card border-left-red shadow h-100 py-2'>
-                <div class='card-body'>
-                    <div class='row no-gutters align-items-center'>
-                        <div class='col mr-2'>
-                            <div class='text-xs font-weight-bold text-primary text-uppercase mb-1'>
-                                Users
+                <!-- Divider -->
+                <hr class='sidebar-divider d-none d-md-block'>
+
+                <!-- Sidebar Toggler (Sidebar) -->
+                <div class='text-center d-none d-md-inline'>
+                    <button class='rounded-circle border-0' id='sidebarToggle'></button>
+                </div>
+
+            </ul>
+            <!-- End of Sidebar -->
+
+            <!-- Content Wrapper -->
+            <div id='content-wrapper' class='d-flex flex-column'>
+
+                <!-- Main Content -->
+                <div id='content'>
+
+                    <!-- Topbar -->
+                    <nav class='navbar navbar-expand navbar-light bg-light topbar mb-4 static-top shadow'>
+
+                        <!-- Sidebar Toggle (Topbar) -->
+                        <button id='sidebarToggleTop' class='btn btn-link d-md-none rounded-circle me-3'>
+                            <i class='fa fa-bars'></i>
+                        </button>
+
+                        <!-- Topbar Search -->
+                        <form class='d-none d-sm-inline-block form-inline me-auto ms-md-3 my-2 my-md-0 mw-100 navbar-search'>
+                            <div class='input-group'>
+                                <input type='text' class='form-control bg-light border-0 small' placeholder='Search' aria-label='Search' aria-describedby='basic-addon2'>
+                                <div class='input-group-append'>
+                                    <button class='btn btn-primary' type='button'>
+                                        <i class='fas fa-search fa-sm'></i>
+                                    </button>
+                                </div>
                             </div>
-                            <div class='h5 mb-0 font-weight-bold text-gray-800'>
-                                {{ users_count }}
-                            </div>
-                        </div>
-                        <div class='col-auto'>
-                            <i class='fas fa-users fa-2x text-gray-300'></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                        </form>
 
-    </div>
+                        <!-- Topbar Navbar -->
+                        <ul class='navbar-nav ms-auto'>
 
-    <div class='row'>
-        <div class='col-lg-6'>
-            <div class='card mb-4'>
-                <div class='card-header'>
-                    <i class='fas fa-chart-bar me-1'></i>
-                    Top Categories
-                </div>
-                <div class='card-body'>
-                    <canvas id='myBarChart' width='100%' height='50'></canvas>
-                </div>
-            </div>
-        </div>
-        <div class='col-lg-6'>
-            <div class='card mb-4'>
-                <div class='card-header'>
-                    <i class='fas fa-chart-pie me-1'></i>
-                    The Most Expensive Auction Items
-                </div>
-                <div class='card-body'>
-                    <canvas id='myPieChart' width='100%' height='50'></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class='card mb-4'>
-        <div class='card-header'>
-            <i class='fas fa-chart-area me-1'></i>
-            Auctions by Category
-        </div>
-        <div class='card-body'>
-            <canvas id='myAreaChart' width='100%' height='30'></canvas>
-        </div>
-    </div>
-
-    <div class='card mb-4'>
-        <div class='card-header'>
-            <i class='fas fa-table me-1'></i>
-            All Auctions
-        </div>
-        <div class='card-body'>
-        
-            <table class='table table-hover'>
-                <thead>
-                    <tr>
-                        <th scope='col'>Title</th>
-                        <th scope='col'>Category</th>
-                        <th scope='col'>Date Created</th>
-                        <th scope='col'>Starting Bid</th>
-                        <th scope='col'>Current Bid</th>
-                        <th scope='col'>Buyer</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for auction in pages %}
-                        <tr>
-                            <td>{{ auction.title }}</td>
-                            <td>{{ auction.category }}</td>
-                            <td>{{ auction.date_created }}</td>
-                            <td>{{ auction.starting_bid }}</td>
-                            <td>{{ auction.current_bid }}</td>
-                            <td>{{ auction.buyer }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            
-            {% if pages.has_other_pages %}
-                <div class='d-flex justify-content-center'>
-                    <ul class='pagination'>
-                        {% if pages.has_previous %}
-                            <li class='page-item'>
-                                <a class='page-link' href='?page={{ pages.previous_page_number }}'>
-                                    &laquo;
+                            <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+                            <li class='nav-item dropdown no-arrow d-sm-none'>
+                                <a class='nav-link' href='#'>
+                                    <i class='fas fa-search fa-fw'></i>
                                 </a>
                             </li>
-                        {% else %}
-                            <li class='page-item disabled'>
-                                <a class='page-link' href='#'>&laquo;</a>
+
+                            <!-- Nav Item - Alerts -->
+                            <li class='nav-item mx-1'>
+                                <a class='nav-link' href='#'>
+                                    <i class='fas fa-bell fa-fw fa-lg'></i>
+                                    <!-- Counter - Alerts -->
+                                    <span class='badge rounded-pill bg-danger badge-counter'>5+</span>
+                                </a>
                             </li>
-                        {% endif %}
-                        {% for i in pages.paginator.page_range %}
-                            {% if pages.number == i %}
-                                <li class='page-item active'>
-                                    <a class='page-link' href='#'>{{ i }}</a>
+
+                            <!-- Nav Item - Messages -->
+                            <li class='nav-item mx-1'>
+                                <a class='nav-link' href='#'>
+                                    <i class='fas fa-envelope fa-fw fa-lg'></i>
+                                    <!-- Counter - Messages -->
+                                    <span class='badge rounded-pill bg-danger badge-counter'>9</span>
+                                </a>
+                            </li>
+
+                            <div class='topbar-divider d-none d-sm-block'></div>
+
+                            <!-- Nav Item - User Information -->
+                            {% if user.is_authenticated %}
+                                <li class='nav-item dropdown no-arrow'>
+                                    <a class='nav-link dropdown-toggle' data-bs-toggle='dropdown' href='#' role='button' aria-haspopup='true' aria-expanded='false'>
+                                        <i class='fas fa-user fa-fw fa-lg'></i>
+                                    </a>
+                                    <div class='dropdown-menu dropdown-menu-end'>
+                                        <a class='dropdown-item' href=#>
+                                            <i class='fas fa-user'></i> User Profile
+                                        </a>
+                                        <div class='dropdown-divider'></div>
+                                        <a class='dropdown-item' href="{% url 'logout' %}">
+                                            <i class='fas fa-sign-out-alt'></i> Log Out
+                                        </a>
+                                    </div>
                                 </li>
                             {% else %}
-                                <li class='page-item'>
-                                    <a class='page-link' href='?page={{ i }}'>{{ i }}</a>
+                                <li class='nav-item'>
+                                    <a class='nav-link' href="{% url 'login' %}">
+                                        <i class='fas fa-sign-in-alt'></i>&nbsp;Log In
+                                    </a>
+                                </li>
+                                <li class='nav-item'>
+                                    <a class='nav-link' href="{% url 'register' %}">
+                                        <i class='fas fa-user-plus'></i>&nbsp;Register
+                                    </a>
                                 </li>
                             {% endif %}
-                        {% endfor %}
-                        {% if pages.has_next %}
-                            <li class='page-item'>
-                                <a class='page-link' href='?page={{ pages.next_page_number }}'>&raquo;</a>
-                            </li>
-                        {% else %}
-                            <li class='page-item disabled'>
-                                <a class='page-link' href='#'>&raquo;</a>
-                            </li>
-                        {% endif %}
-                    </ul>
+
+                        </ul>
+
+                    </nav>
+                    <!-- End of Topbar -->
+
+                    <!-- Begin Page Content -->
+                    <div class='container-fluid px-4 py-2'>
+
+                        {% block body %}
+                        {% endblock %}
+
+                    </div>
+                    <!-- /.container-fluid -->
+
                 </div>
-            {% endif %}
-        
+                <!-- End of Main Content -->
+
+                <!-- Footer -->
+                <footer class='sticky-footer bg-light'>
+                    <div class='container my-auto'>
+                        <div class='copyright text-center my-auto'>
+                            <span>
+                                Copyright &copy; <script>document.write(new Date().getFullYear())</script> Instagate Technology.
+                            </span>
+                        </div>
+                    </div>
+                </footer>
+                <!-- End of Footer -->
+
+            </div>
+            <!-- End of Content Wrapper -->
+
         </div>
-    </div>
+        <!-- End of Page Wrapper -->
 
+        <!-- Scroll to Top Button-->
+        <a class='scroll-to-top rounded' href='#page-top'>
+            <i class='fas fa-angle-up'></i>
+        </a>
 
-{% endblock %}
+        {% block script %}
+            <!-- Bootstrap core JavaScript-->
+            <script src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js'></script>
+
+            <!-- Core plugin JavaScript-->
+            <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>
+            <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js'></script>
+
+            <!-- Page level plugins -->
+            <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js'></script>
+
+            <!-- Custom scripts -->
+            <script src='{% static "js/chart-area-demo.js" %}'></script>
+            <script src='{% static "js/chart-bar-demo.js" %}'></script>
+            <script src='{% static "js/chart-pie-demo.js" %}'></script>
+            <script src='{% static "js/scripts.js" %}'></script>
+
+        {% endblock %}
+
+    </body>
+
+</html>

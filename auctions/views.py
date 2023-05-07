@@ -1,11 +1,11 @@
+import os
+import webbrowser
 import requests
 import json
 import urllib3
 import psycopg2
 import numpy as np
 import psycopg2.extras as extras
-import pandas as pd
-import pytz
 from decimal import Decimal
 from django import forms
 from django.contrib.auth import authenticate, login, logout
@@ -22,19 +22,19 @@ from datetime import datetime
 #### source : https://api.gsa.gov/assets/gsaauctions/v2/auctions?api_key=8QtA6Q8cJnSTUcKsHk5Q2wshCIyeQ3ASewjEpM3L&format=JSON
 conn = psycopg2.connect(user='admin', password='temp4ian1', host='localhost', port='5433', database='auctions')
 cur = conn.cursor()
-
-url = 'https://api.gsa.gov/assets/gsaauctions/v2/auctions?api_key=8QtA6Q8cJnSTUcKsHk5Q2wshCIyeQ3ASewjEpM3L&format=JSON'
-r = requests.get(url)
-data = json.loads(r.text,strict=False)
-ions = data['Results']
-
 cur.execute("""
     DELETE FROM auctions_auction;
     DELETE FROM auctions_image;
     """)
+http = urllib3.PoolManager()
+url = 'https://api.gsa.gov/assets/gsaauctions/v2/auctions?api_key=8QtA6Q8cJnSTUcKsHk5Q2wshCIyeQ3ASewjEpM3L'
+with open('20230416-04293903.JSON') as file:
+    res = json.load(file, strict=False)
+r = res['Results']
+print(r)
 id = 1 #I'm using index as an id_key
 
-for i in ions:
+for i in r:
     title = None
     description = None
     date_created = None
@@ -43,13 +43,13 @@ for i in ions:
     active = None
     image = None
 
-    title = i['ItemName       ']
+    title =       i['ItemName       ']
     description = i['ItemDescURL    ']
-    date_created =i['AucStartDt     ']
-    starting_bid =i['AucIncrement   ']
+    date_created = i['AucStartDt     ']
+    starting_bid = i['AucIncrement   ']
     current_bid = i['HighBidAmount  ']
-    active = i['AuctionStatus  ']
-    image = i['ImageURL       ']
+    active =      i['AuctionStatus  ']
+    image =       i['ImageURL       ']
 
     cur.execute("""
         INSERT INTO auctions_auction

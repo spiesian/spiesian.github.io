@@ -34,7 +34,7 @@ class Auction(models.Model):
     buyer = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
     watchers = models.ManyToManyField(User, related_name='watchlist', blank=True)
     active = models.CharField(default='A')
-    image = models.CharField( max_length=100, blank = True, null = True)
+    image = models.CharField(max_length=100, blank = True)
 
     def __str__(self):
         return f'Auction #{self.id}: {self.title}'
