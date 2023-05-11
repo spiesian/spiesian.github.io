@@ -28,8 +28,8 @@ cur.execute("""
     """)
 http = urllib3.PoolManager()
 url = 'https://api.gsa.gov/assets/gsaauctions/v2/auctions?api_key=8QtA6Q8cJnSTUcKsHk5Q2wshCIyeQ3ASewjEpM3L'
-with open('20230416-04293903.JSON') as file:
-    res = json.load(file, strict=False)
+file =  requests.get(url)
+res = json.loads(file.text, strict=False)
 r = res['Results']
 print(r)
 id = 1 #I'm using index as an id_key
